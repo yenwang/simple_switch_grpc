@@ -55,16 +55,23 @@ def readTableRules(p4info_helper, sw):
                 print '%r' % p.value,
             print
 ############################################################################################
-def printDirectCounter(p4info_helper, sw):
-    for response in sw.ReadDirectCounters():
-	for entity in response.entities:
-	    direct_counter = entity.direct_counter_entry
-	    #table_id
-	    print "direct counter of %s: %d packets (%d bytes)" % (p4info_helper.get_tables_names(direct_counter.table_entry.table_id), direct_counter.data.packet_count, direct_counter.data.byte_count)
+def printDirectCounter(p4info_helper, sw, table_name=None):
+    if table_name is not None:
+        for response in sw.ReadDirectCounters(table_id = p4info_helper.get_tables_id(table_name)):
+	    for entity in response.entities:
+	        direct_counter = entity.direct_counter_entry
+	        #table_id
+	        print "direct counter of %s: %d packets (%d bytes)" % (table_name, direct_counter.data.packet_count, direct_counter.data.byte_count)
+    else:
+        for response in sw.ReadDirectCounters():
+	    for entity in response.entities:
+	        direct_counter = entity.direct_counter_entry
+	        #table_id
+	        print "direct counter of %s: %d packets (%d bytes)" % (p4info_helper.get_tables_name(direct_counter.table_entry.table_id), direct_counter.data.packet_count, direct_counter.data.byte_count)
 ############################################################################################
 def printCounter(p4info_helper, sw, counter_name=None, index=None):
 
-    if counter_name==None:
+    if counter_name is None:
         for response in sw.ReadCounters():
             for entity in response.entities:
                 counter = entity.counter_entry
@@ -133,7 +140,7 @@ def main(p4info_file_path, bmv2_file_path):
         while True:
             sleep(2)
             print '\n----- Reading direct counters -----'
-            printDirectCounter(p4info_helper, s1)	
+            printDirectCounter(p4info_helper, s1, table_name="MyIngress.ipv4_lpm")	
     except KeyboardInterrupt:
         print " Shutting down."
     except grpc.RpcError as e:
