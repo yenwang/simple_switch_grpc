@@ -111,6 +111,7 @@ class SwitchConnection(object):
             for response in self.client_stub.Read(request):
                 yield response
     ####################################################################################
+    # function used to manipulate multicast group entry
     def WritePRE(self, mc_group, dry_run=False):
         request = p4runtime_pb2.WriteRequest()
         request.device_id = self.device_id
@@ -122,6 +123,22 @@ class SwitchConnection(object):
             print "P4Runtime Write:", request
         else:
             self.client_stub.Write(request)
+    ####################################################################################
+    #function used to read direct counter entry
+    def ReadDirectCounters(self, table_id=None, dry_run=False):
+	request = p4runtime_pb2.ReadRequest()
+	request.device_id = self.device_id
+	entity = request.entities.add()
+	direct_counter_entry = entity.direct_counter_entry
+	if table_id is not None:
+	    direct_counter_entry.table_entry.table_id = table_id
+	else:
+	    direct_counter_entry.table_entry.table_id = 0
+	if dry_run:
+	    print "P4Runtime Read:", request
+	else:
+	    for response in self.client_stub.Read(request):
+		yield response
     ####################################################################################
     def ReadCounters(self, counter_id=None, index=None, dry_run=False):
         request = p4runtime_pb2.ReadRequest()

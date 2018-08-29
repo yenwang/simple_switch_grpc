@@ -1,0 +1,2 @@
+counter_reset direct_counter_stats 
+counter_reset counter_stats 

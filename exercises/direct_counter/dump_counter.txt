@@ -1,0 +1,8 @@
+counter_read direct_counter_stats 0
+counter_read direct_counter_stats 1
+counter_read direct_counter_stats 2
+counter_read direct_counter_stats 3
+counter_read direct_counter_stats 4
+counter_read counter_stats 100
+counter_read counter_stats 200
+counter_read counter_stats 300
