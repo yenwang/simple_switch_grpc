@@ -13,10 +13,9 @@
 # limitations under the License.
 #
 import re
-
 import google.protobuf.text_format
-from p4 import p4runtime_pb2
-from p4.config import p4info_pb2
+from p4.v1 import p4runtime_pb2
+from p4.config.v1 import p4info_pb2
 
 from convert import encode
 
@@ -97,8 +96,8 @@ class P4InfoHelper(object):
         p4runtime_match = p4runtime_pb2.FieldMatch()
         p4runtime_match.field_id = p4info_match.id
         match_type = p4info_match.match_type
-        if match_type == p4info_pb2.MatchField.VALID:
-            valid = p4runtime_match.valid
+        if match_type == p4info_pb2.MatchField.UNSPECIFIED:
+            valid = p4runtime_match.unspecified
             valid.value = bool(value)
         elif match_type == p4info_pb2.MatchField.EXACT:
             exact = p4runtime_match.exact
@@ -193,7 +192,7 @@ class P4InfoHelper(object):
         return table_entry
 
     def get_replicas_pb(self, egress_port, instance):
-	p4runtime_replicas = p4runtime_pb2.MulticastGroupEntry.Replica()
+	p4runtime_replicas = p4runtime_pb2.Replica()
 	p4runtime_replicas.egress_port = egress_port
 	p4runtime_replicas.instance = instance
 	return p4runtime_replicas

@@ -23,6 +23,7 @@ tables {
     id: 16826802
   }
   size: 1024
+  idle_timeout_behavior: NO_TIMEOUT
 }
 tables {
   preamble {
@@ -46,6 +47,7 @@ tables {
     id: 16791180
   }
   size: 1024
+  idle_timeout_behavior: NO_TIMEOUT
 }
 actions {
   preamble {
@@ -91,4 +93,6 @@ actions {
     name: "port"
     bitwidth: 9
   }
+}
+type_info {
 }

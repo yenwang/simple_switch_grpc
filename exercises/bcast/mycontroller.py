@@ -17,6 +17,39 @@ import p4runtime_lib.helper
 SWITCH_TO_HOST_PORT = 1
 SWITCH_TO_SWITCH_PORT = 2
 
+def writeArpRules(p4info_helper, sw, dst_mac, port=None):
+    if dst_mac=="ff:ff:ff:ff:ff:ff":
+        table_entry = p4info_helper.buildTableEntry(
+        table_name = "MyIngress.arp_exact",
+        match_fields = {
+	    "hdr.ethernet.dstAddr": dst_mac
+        },
+        action_name = "MyIngress.flooding"
+        )
+    else:
+        table_entry = p4info_helper.buildTableEntry(
+        table_name = "MyIngress.arp_exact",
+        match_fields = {
+	    "hdr.ethernet.dstAddr": dst_mac
+        },
+        action_name = "MyIngress.arp_reply",
+	action_params={
+	    "port" : port
+        })
+    sw.WriteTableEntry(table_entry)
+
+def writeIPRules(p4info_helper, sw, dst_ip, mask, port):
+    table_entry = p4info_helper.buildTableEntry(
+    table_name = "MyIngress.ipv4_lpm",
+    match_fields = {
+	"hdr.ipv4.dstAddr": (dst_ip, mask)
+    },
+    action_name = "MyIngress.lan_forward",
+    action_params={
+	"port":port
+    })
+    sw.WriteTableEntry(table_entry)
+
 def printGrpcError(e):
     print "gRPC Error:", e.details(),
     status_code = e.code()
@@ -48,6 +81,17 @@ def main(p4info_file_path, bmv2_file_path):
         print "Installed P4 Program using SetForwardingPipelineConfig on s1"
 
 	#############################################################################
+	writeArpRules(p4info_helper, sw=s1, dst_mac="ff:ff:ff:ff:ff:ff")
+	writeArpRules(p4info_helper, sw=s1, dst_mac="00:00:00:00:01:01", port=1)
+	writeArpRules(p4info_helper, sw=s1, dst_mac="00:00:00:00:01:02", port=2)
+	writeArpRules(p4info_helper, sw=s1, dst_mac="00:00:00:00:01:03", port=3)
+	writeArpRules(p4info_helper, sw=s1, dst_mac="00:00:00:00:01:04", port=4)
+
+	writeIPRules(p4info_helper, sw=s1, dst_ip="10.0.1.1", mask=32, port=1)
+	writeIPRules(p4info_helper, sw=s1, dst_ip="10.0.1.2", mask=32, port=2)
+	writeIPRules(p4info_helper, sw=s1, dst_ip="10.0.1.3", mask=32, port=3)
+	writeIPRules(p4info_helper, sw=s1, dst_ip="10.0.1.4", mask=32, port=4)
+
 	mc_group_entry = p4info_helper.buildMCEntry(
 	mc_group_id = 1,
 	replicas={
