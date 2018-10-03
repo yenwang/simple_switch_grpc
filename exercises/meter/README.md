@@ -16,3 +16,8 @@
 而set_meter_drop.sh中設定info_rate 為128KBytes時，</br>
 則可以發現有時候當iperf3傳送封包太快時，</br>
 會造成meter判斷超速而drop封包</br>
+* 關於meter_array_set_rates指令
+Trace https://github.com/p4lang/behavioral-model/blob/master/src/bm_sim/meters.cpp 可以發現</br>
+simple_switch並沒有照著RFC 2698(Two Rate three color marker)去實作，
+而是若超過一個rate就mark為yello，並忽略後續的rate</br>
+所以並沒有CIR和PIR的區別，也就不會有red
