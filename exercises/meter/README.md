@@ -11,8 +11,8 @@
 
 # 實驗/細節解釋
 * set_meter.sh及set_meter_drop.sh</br>
-  由於測試之後發現iperf3的throughput為128KBytes，</br>
-  因此set_meter.sh設定的info_rate為1MB不會造成meter判斷超速；</br>
-  而set_meter_drop.sh中設定info_rate 為128KBytes時，</br>
-  則可以發現有時候當iperf3傳送封包太快時，</br>
-  會造成meter判斷超速而drop封包</br>
+由於測試之後發現iperf3的throughput為128KBytes，</br>
+因此set_meter.sh設定的info_rate為1MB不會造成meter判斷超速；</br>
+而set_meter_drop.sh中設定info_rate 為128KBytes時，</br>
+則可以發現有時候當iperf3傳送封包太快時，</br>
+會造成meter判斷超速而drop封包</br>
