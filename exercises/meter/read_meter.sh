@@ -1,0 +1,4 @@
+meter_get_rates ingress_meter_stats 1
+meter_get_rates ingress_meter_stats 2
+meter_get_rates ingress_meter_stats 3
+meter_get_rates ingress_meter_stats 4
