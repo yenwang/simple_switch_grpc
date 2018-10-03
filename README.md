@@ -8,3 +8,9 @@
 * step 7. 在h2的xterminal中輸入iperf3 -s
 * step 8. 在h1的xterminal中輸入iperf3 -c 10.0.1.2 -u -n 100MB
 * step 9. 若在step3使用set_meter_drop.sh則可以在s1.log中看到因為meter被drop的packet
+
+# 實驗/細節解釋
+* set_meter.sh及set_meter_drop.sh
+  由於測試之後發現iperf3的throughput為128KBytes，因此set_meter.sh設定的info_rate為1MB不會造成meter判斷超速；
+  而set_meter_drop.sh中設定info_rate 為128KBytes時，則可以發現有時候當iperf3傳送封包太快時，會造成meter判斷超速
+  而drop封包
