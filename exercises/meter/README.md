@@ -18,6 +18,5 @@
 會造成meter判斷超速而drop封包</br>
 * 關於meter_array_set_rates指令
 Trace https://github.com/p4lang/behavioral-model/blob/master/src/bm_sim/meters.cpp 可以發現</br>
-simple_switch並沒有照著RFC 2698(Two Rate three color marker)去實作，
-而是若超過一個rate就mark為yello，並忽略後續的rate</br>
-所以並沒有CIR和PIR的區別，也就不會有red
+simple_switch並沒有照著RFC 2698(Two Rate three color marker)去實作，</br>
+而是若超過一個rate就mark為yello，並忽略後續的rate所以並沒有CIR和PIR的區別，也就不會有red
