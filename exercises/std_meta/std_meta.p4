@@ -1,9 +1,13 @@
 /* -*- P4_16 -*- */
 #include <core.p4>
 #include <v1model.p4>
-const bit<16> TYPE_IPV4 = 0x0800;
-const bit<16> TYPE_ARP = 0x0806;
+
 #define DEBUG_TABLE
+
+const bit<16> TYPE_IPV4 = 0x0800;
+const bit<32> MAX_NUM = 1<<9;
+const bit<32> I2E_ID = 9;
+const bit<32> E2E_ID = 37;
 /*************************************************************************
 *********************** H E A D E R S  ***********************************
 *************************************************************************/
@@ -34,26 +38,14 @@ header ipv4_t {
     ip4Addr_t dstAddr;
 }
 
-header arp_t {
-    bit<16>   htype;
-    bit<16>   ptype;
-    bit<8>    hlen;
-    bit<8>    plen;
-    bit<16>   opcode;
-    macAddr_t srcMAC;
-    ip4Addr_t srcIP;
-    macAddr_t dstMAC;
-    ip4Addr_t dstIP;
-}
-
 struct metadata {
-    /* empty */
+    bit<2> inflag;
+    bit<2> eflag;
 }
 
 struct headers {
     ethernet_t   ethernet;
     ipv4_t       ipv4;
-    arp_t        arp;
 }
 
 /*************************************************************************
@@ -73,13 +65,8 @@ parser MyParser(packet_in packet,
 	packet.extract(hdr.ethernet);
 	transition select(hdr.ethernet.etherType) {
 	    TYPE_IPV4: parse_ipv4;
-	    TYPE_ARP: parse_arp;
 	    default: accept;
 	}
-    }
-    state parse_arp {
-	packet.extract(hdr.arp);
-	transition accept;
     }
     state parse_ipv4{
 	packet.extract(hdr.ipv4);
@@ -147,38 +134,12 @@ control debug_func(in standard_metadata_t standard_metadata)
 control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
+
     #ifdef DEBUG_TABLE
-	debug_func() debug_ingress_start;
-	debug_func() debug_ingress_end;
+	debug_func() debug_ingress;
     #endif
-    action drop() {
-        mark_to_drop();
-    }
-
-    action flooding(){
-	standard_metadata.mcast_grp = 1;
-    }
-
-    action arp_reply(egressSpec_t port){
-	standard_metadata.egress_spec = port;
-    }
-
     action lan_forward(egressSpec_t port){
 	standard_metadata.egress_spec = port;
-    }
-
-    table arp_exact {
-	key = {
-	    hdr.ethernet.dstAddr: exact;
-	}
-	actions = {
-	    drop;
-	    NoAction;
-	    flooding;
-	    arp_reply;
-	}
-	size = 1024;
-	default_action = NoAction();
     }
 
     table ipv4_lpm {
@@ -186,7 +147,6 @@ control MyIngress(inout headers hdr,
 	    hdr.ipv4.dstAddr: lpm;
 	}
 	actions = {
-	    drop;
 	    NoAction;
 	    lan_forward;
 	}
@@ -195,18 +155,19 @@ control MyIngress(inout headers hdr,
     }
     
     apply {
-	#ifdef DEBUG_TABLE
-	    debug_ingress_start.apply(standard_metadata);
-    	#endif
-	if(hdr.arp.isValid()){
-	    arp_exact.apply();
-	}
-	else if(hdr.ipv4.isValid()){
-	    ipv4_lpm.apply();
-	}
-	#ifdef DEBUG_TABLE
-	    debug_ingress_end.apply(standard_metadata);
-    	#endif
+	    #ifdef DEBUG_TABLE
+		debug_ingress.apply(standard_metadata);
+	    #endif
+	    if(meta.inflag==0){
+	    	meta.inflag = 1;
+//		clone3(CloneType.I2E, I2E_ID, meta);
+//		resubmit(meta);
+	    }
+	    else{
+	        if(hdr.ipv4.isValid()){
+	            ipv4_lpm.apply();
+	        }
+	    }
     }
 
 }
@@ -218,13 +179,20 @@ control MyIngress(inout headers hdr,
 control MyEgress(inout headers hdr,
                  inout metadata meta,
                  inout standard_metadata_t standard_metadata) {
+
     #ifdef DEBUG_TABLE
 	debug_func() debug_egress;
     #endif
+
     apply {
-        #ifdef DEBUG_TABLE
-	    debug_egress.apply(standard_metadata);
-        #endif
+	#ifdef DEBUG_TABLE
+	debug_egress.apply(standard_metadata);
+	#endif
+	if(meta.eflag==0){
+	    meta.eflag = 1;
+	    clone3(CloneType.E2E, E2E_ID, meta);
+//	    recirculate(meta);
+	}
     }
 }
 
@@ -263,12 +231,7 @@ control MyDeparser(packet_out packet, in headers hdr) {
     apply {
         /* TODO: add deparser logic */
 	packet.emit(hdr.ethernet);
-//	if(hdr.ipv4.isValid()){
 	packet.emit(hdr.ipv4);
-//	}
-//	else if(hdr.arp.isValid()){
-	packet.emit(hdr.arp);
-//	}
     }
 }
 

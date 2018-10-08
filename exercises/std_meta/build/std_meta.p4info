@@ -1,0 +1,306 @@
+tables {
+  preamble {
+    id: 33598327
+    name: "MyIngress.debug_ingress.dbg_table"
+    alias: "debug_ingress.dbg_table"
+  }
+  match_fields {
+    id: 1
+    name: "standard_metadata.ingress_port"
+    bitwidth: 9
+    match_type: EXACT
+  }
+  match_fields {
+    id: 2
+    name: "standard_metadata.egress_spec"
+    bitwidth: 9
+    match_type: EXACT
+  }
+  match_fields {
+    id: 3
+    name: "standard_metadata.egress_port"
+    bitwidth: 9
+    match_type: EXACT
+  }
+  match_fields {
+    id: 4
+    name: "standard_metadata.clone_spec"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 5
+    name: "standard_metadata.instance_type"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 6
+    name: "standard_metadata.drop"
+    bitwidth: 1
+    match_type: EXACT
+  }
+  match_fields {
+    id: 7
+    name: "standard_metadata.recirculate_port"
+    bitwidth: 16
+    match_type: EXACT
+  }
+  match_fields {
+    id: 8
+    name: "standard_metadata.packet_length"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 9
+    name: "standard_metadata.enq_timestamp"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 10
+    name: "standard_metadata.enq_qdepth"
+    bitwidth: 19
+    match_type: EXACT
+  }
+  match_fields {
+    id: 11
+    name: "standard_metadata.deq_timedelta"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 12
+    name: "standard_metadata.deq_qdepth"
+    bitwidth: 19
+    match_type: EXACT
+  }
+  match_fields {
+    id: 13
+    name: "standard_metadata.ingress_global_timestamp"
+    bitwidth: 48
+    match_type: EXACT
+  }
+  match_fields {
+    id: 14
+    name: "standard_metadata.egress_global_timestamp"
+    bitwidth: 48
+    match_type: EXACT
+  }
+  match_fields {
+    id: 15
+    name: "standard_metadata.lf_field_list"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 16
+    name: "standard_metadata.mcast_grp"
+    bitwidth: 16
+    match_type: EXACT
+  }
+  match_fields {
+    id: 17
+    name: "standard_metadata.resubmit_flag"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 18
+    name: "standard_metadata.egress_rid"
+    bitwidth: 16
+    match_type: EXACT
+  }
+  match_fields {
+    id: 19
+    name: "standard_metadata.checksum_error"
+    bitwidth: 1
+    match_type: EXACT
+  }
+  match_fields {
+    id: 20
+    name: "standard_metadata.recirculate_flag"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  action_refs {
+    id: 16800567
+  }
+  const_default_action_id: 16800567
+  size: 1024
+  idle_timeout_behavior: NO_TIMEOUT
+}
+tables {
+  preamble {
+    id: 33574068
+    name: "MyIngress.ipv4_lpm"
+    alias: "ipv4_lpm"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.ipv4.dstAddr"
+    bitwidth: 32
+    match_type: LPM
+  }
+  action_refs {
+    id: 16800567
+  }
+  action_refs {
+    id: 16791180
+  }
+  size: 1024
+  idle_timeout_behavior: NO_TIMEOUT
+}
+tables {
+  preamble {
+    id: 33582537
+    name: "MyEgress.debug_egress.dbg_table"
+    alias: "debug_egress.dbg_table"
+  }
+  match_fields {
+    id: 1
+    name: "standard_metadata.ingress_port"
+    bitwidth: 9
+    match_type: EXACT
+  }
+  match_fields {
+    id: 2
+    name: "standard_metadata.egress_spec"
+    bitwidth: 9
+    match_type: EXACT
+  }
+  match_fields {
+    id: 3
+    name: "standard_metadata.egress_port"
+    bitwidth: 9
+    match_type: EXACT
+  }
+  match_fields {
+    id: 4
+    name: "standard_metadata.clone_spec"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 5
+    name: "standard_metadata.instance_type"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 6
+    name: "standard_metadata.drop"
+    bitwidth: 1
+    match_type: EXACT
+  }
+  match_fields {
+    id: 7
+    name: "standard_metadata.recirculate_port"
+    bitwidth: 16
+    match_type: EXACT
+  }
+  match_fields {
+    id: 8
+    name: "standard_metadata.packet_length"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 9
+    name: "standard_metadata.enq_timestamp"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 10
+    name: "standard_metadata.enq_qdepth"
+    bitwidth: 19
+    match_type: EXACT
+  }
+  match_fields {
+    id: 11
+    name: "standard_metadata.deq_timedelta"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 12
+    name: "standard_metadata.deq_qdepth"
+    bitwidth: 19
+    match_type: EXACT
+  }
+  match_fields {
+    id: 13
+    name: "standard_metadata.ingress_global_timestamp"
+    bitwidth: 48
+    match_type: EXACT
+  }
+  match_fields {
+    id: 14
+    name: "standard_metadata.egress_global_timestamp"
+    bitwidth: 48
+    match_type: EXACT
+  }
+  match_fields {
+    id: 15
+    name: "standard_metadata.lf_field_list"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 16
+    name: "standard_metadata.mcast_grp"
+    bitwidth: 16
+    match_type: EXACT
+  }
+  match_fields {
+    id: 17
+    name: "standard_metadata.resubmit_flag"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  match_fields {
+    id: 18
+    name: "standard_metadata.egress_rid"
+    bitwidth: 16
+    match_type: EXACT
+  }
+  match_fields {
+    id: 19
+    name: "standard_metadata.checksum_error"
+    bitwidth: 1
+    match_type: EXACT
+  }
+  match_fields {
+    id: 20
+    name: "standard_metadata.recirculate_flag"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  action_refs {
+    id: 16800567
+  }
+  const_default_action_id: 16800567
+  size: 1024
+  idle_timeout_behavior: NO_TIMEOUT
+}
+actions {
+  preamble {
+    id: 16800567
+    name: "NoAction"
+    alias: "NoAction"
+  }
+}
+actions {
+  preamble {
+    id: 16791180
+    name: "MyIngress.lan_forward"
+    alias: "lan_forward"
+  }
+  params {
+    id: 1
+    name: "port"
+    bitwidth: 9
+  }
+}
