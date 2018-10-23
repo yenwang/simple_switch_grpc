@@ -10,8 +10,8 @@
 2. Open another shell and run python mycontroller.py.  
 3. In mininet prompt type pingall, then you can see all icmp/arp packets are well forwarded.  
 ---
-## Experiment Topology
- In this implementation, there are 4 hosts connected to a switch.  
+## Experiment Topology  
+In this implementation, there are 4 hosts connected to a switch.  
 ---
 ## Notice 
 I assume that: 
