@@ -1,4 +1,4 @@
-##Implementing layer2 learning_switch  
+## Implementing layer2 learning_switch  
 ---
-#Introduction
+# Introduction
 ---
