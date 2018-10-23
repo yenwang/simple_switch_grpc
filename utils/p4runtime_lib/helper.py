@@ -206,3 +206,19 @@ class P4InfoHelper(object):
 		for egress_port, instance in replicas.iteritems()
 	    ])
 	return mc_group_entry
+
+    def get_metadata_pb(self, metadata_id, value):
+	p4runtime_metadata = p4runtime_pb2.PacketMetadata()
+	p4runtime_metadata.metadata_id = metadata_id
+	p4runtime_metadata.value = value
+	return p4runtime_metadata
+
+    def buildPacketOut(self, payload, metadata=None):
+	packet_out = p4runtime_pb2.PacketOut()
+	packet_out.payload = payload
+	if metadata:
+	    packet_out.metadata.extend([
+		self.get_metadata_pb(metadata_id, value)
+		for metadata_id, value in metadata.iteritems()
+	    ])
+	return packet_out

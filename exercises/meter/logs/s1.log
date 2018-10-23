@@ -1,0 +1,10 @@
+Calling target program-options parser
+Adding interface s1-eth1 as port 1
+[02:07:31.613] [bmv2] [D] [thread 2399] Adding interface s1-eth1 as port 1
+Adding interface s1-eth2 as port 2
+[02:07:31.615] [bmv2] [D] [thread 2399] Adding interface s1-eth2 as port 2
+Adding interface s1-eth3 as port 3
+[02:07:31.617] [bmv2] [D] [thread 2399] Adding interface s1-eth3 as port 3
+Adding interface s1-eth4 as port 4
+[02:07:31.619] [bmv2] [D] [thread 2399] Adding interface s1-eth4 as port 4
+I1012 02:07:31.622463826    2399 server_builder.cc:247]      Synchronous server. Num CQs: 1, Min pollers: 1, Max Pollers: 2147483647, CQ timeout (msec): 1000

@@ -1,0 +1,52 @@
+tables {
+  preamble {
+    id: 33574068
+    name: "MyIngress.ipv4_lpm"
+    alias: "ipv4_lpm"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.ipv4.dstAddr"
+    bitwidth: 32
+    match_type: LPM
+  }
+  action_refs {
+    id: 16812027
+  }
+  action_refs {
+    id: 16800567
+  }
+  action_refs {
+    id: 16791180
+  }
+  size: 1024
+  idle_timeout_behavior: NO_TIMEOUT
+}
+actions {
+  preamble {
+    id: 16800567
+    name: "NoAction"
+    alias: "NoAction"
+  }
+}
+actions {
+  preamble {
+    id: 16812027
+    name: "MyIngress.drop_with_count"
+    alias: "drop_with_count"
+  }
+}
+actions {
+  preamble {
+    id: 16791180
+    name: "MyIngress.lan_forward"
+    alias: "lan_forward"
+  }
+  params {
+    id: 1
+    name: "port"
+    bitwidth: 9
+  }
+}
+type_info {
+}

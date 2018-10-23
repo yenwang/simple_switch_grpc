@@ -68,6 +68,26 @@ class SwitchConnection(object):
             for item in self.stream_msg_resp:
                 return item # just one
 
+    def WritePacketOut(self, packet, dry_run=False, **kwargs):
+	request = p4runtime_pb2.StreamMessageRequest()
+	request.packet.CopyFrom(packet)
+	if dry_run:
+	    print "P4 Runtime WritePacketOut: ", request
+	else:
+	    self.requests_stream.put(request)
+	    for item in self.stream_msg_resp:
+		return item
+	
+    def ReadPacketIn(self, dry_run=False, **kwargs):
+	request = p4runtime_pb2.StreamMessageRequest()
+        if dry_run:
+	    print "P4 Runtime ReadPacketIn: ", request
+	else:
+	    self.requests_stream.put(request)
+	    for item in self.stream_msg_resp:
+		return item
+    ####################################################################################
+    ####################################################################################
     def SetForwardingPipelineConfig(self, p4info, dry_run=False, **kwargs):
         device_config = self.buildDeviceConfig(**kwargs)
         request = p4runtime_pb2.SetForwardingPipelineConfigRequest()
