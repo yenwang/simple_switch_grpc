@@ -20,6 +20,6 @@ I assume that:
 ---
 ## Questions 
 + I am curious about if there is any mechanism for my controller to request port status from switch using P4 Runtime.  
-If there is such a mechanism, then my controller can configure the PRE dynamically.
+If there is such a mechanism, then my controller can configure the PRE dynamically.  
 (In OpenFlow, API "PortStatusRequest" can request the port status from switch.)  
 I have studied the p4runtime.proto file, but It seems that there is no such rpc?
