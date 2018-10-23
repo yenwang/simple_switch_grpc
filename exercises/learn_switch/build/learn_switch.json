@@ -237,7 +237,7 @@
             "filename" : "learn_switch.p4",
             "line" : 4,
             "column" : 24,
-            "source_fragment" : "255; ..."
+            "source_fragment" : "255; // I specify 255 for cpu port while running simple_switch_grpc with command --cpu-port 255 ..."
           }
         },
         {

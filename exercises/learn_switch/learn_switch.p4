@@ -1,7 +1,7 @@
 #include <core.p4>
 #include <v1model.p4>
 
-const bit<9> CPU_PORT = 255;
+const bit<9> CPU_PORT = 255; // I specify 255 for cpu port while running simple_switch_grpc with command --cpu-port 255
 /*************************************************************************
 *********************** H E A D E R S  ***********************************
 *************************************************************************/
@@ -18,13 +18,13 @@ header ethernet_t {
 
 @controller_header("packet_in")
 header packet_in_header_t {
-    bit<9> ingress_port;
+    bit<9> ingress_port;    //for switch to carry the original ingress port of packet-in packet
 }
 
 @controller_header("packet_out")
 header packet_out_header_t {
-    bit<9> egress_port;
-    bit<16> mcast;
+    bit<9> egress_port;	   //for controller to tell switches to forward the packet-out packet through this field
+    bit<16> mcast;	   //for controller to specify a multicast group if needed
 }
 
 struct metadata {
@@ -48,7 +48,7 @@ parser MyParser(packet_in packet,
 
     state start {
         transition select(standard_metadata.ingress_port){
-	    CPU_PORT: parse_packet_out;
+	    CPU_PORT: parse_packet_out; // if is packect-out packet then extract packet-out header
 	    default: parse_ethernet;
 	}
     }
@@ -81,14 +81,14 @@ control MyVerifyChecksum(inout headers hdr, inout metadata meta) {
 control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
-    action send_to_cpu(){
+    action send_to_cpu(){    //packet-in action
         standard_metadata.egress_spec = CPU_PORT;
         hdr.packet_in.setValid();
         hdr.packet_in.ingress_port = standard_metadata.ingress_port;
     }
     
     action flooding(){
-	standard_metadata.mcast_grp = 1;
+	standard_metadata.mcast_grp = 1;    //controller will configue multicast group 1
     }
 
     action arp_reply(egressSpec_t port){
@@ -119,13 +119,13 @@ control MyIngress(inout headers hdr,
     }
 
     apply {
-	    if(standard_metadata.ingress_port == CPU_PORT){
-		debug_table.apply();
-		standard_metadata.egress_spec = hdr.packet_out.egress_port;
+	    if(standard_metadata.ingress_port == CPU_PORT){    //deal with packet-out packet
+		debug_table.apply(); 
+		standard_metadata.egress_spec = hdr.packet_out.egress_port;  //copy packet-out header to standard_metadata
 		standard_metadata.mcast_grp = hdr.packet_out.mcast;
 		hdr.packet_out.setInvalid();
 	    }
-	    else{
+	    else{    //deal with normal packet
 		arp_exact.apply();
 	    }
     }

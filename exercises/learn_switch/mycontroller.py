@@ -17,7 +17,7 @@ import p4runtime_lib.helper
 SWITCH_TO_HOST_PORT = 1
 SWITCH_TO_SWITCH_PORT = 2
 
-def writeARPReply(p4info_helper, sw, in_port, dst_mac, port=None):
+def writeARPReply(p4info_helper, sw, in_port, dst_mac, port=None):    #write rules to arp_exact table with action arp_reply
     table_entry = p4info_helper.buildTableEntry(
     table_name = "MyIngress.arp_exact",
     match_fields = {
@@ -30,7 +30,7 @@ def writeARPReply(p4info_helper, sw, in_port, dst_mac, port=None):
     })
     sw.WriteTableEntry(table_entry)
 
-def writeARPFlood(p4info_helper, sw, in_port, dst_mac, port=None):
+def writeARPFlood(p4info_helper, sw, in_port, dst_mac, port=None):    #write rules to arp_exact table with action flooding
     table_entry = p4info_helper.buildTableEntry(
     table_name = "MyIngress.arp_exact",
     match_fields = {
@@ -54,16 +54,25 @@ def main(p4info_file_path, bmv2_file_path):
     arp_rules = {}
     flag = 0
     bcast = "ff:ff:ff:ff:ff:ff"
+
     try:
+	# connect to grpc server s1
         s1 = p4runtime_lib.bmv2.Bmv2SwitchConnection(
             name='s1',
             address='127.0.0.1:50051',
             device_id=0,
             proto_dump_file='logs/s1-p4runtime-requests.txt')
+
+	#send MasterArbitrationUpdate to switch
         content = s1.MasterArbitrationUpdate()
+
+	#SetForwardingPipleine using learn_switch.p4
         s1.SetForwardingPipelineConfig(p4info=p4info_helper.p4info,
                                        bmv2_json_file_path=bmv2_file_path)
         print "Installed P4 Program using SetForwardingPipelineConfig on s1"
+
+	#write multicast group entry 1 to switch
+	#Question: Is there any p4 runtime rpc for controller to know the port status of switch, so i can dynamically configure this entry?
 	mc_group_entry = p4info_helper.buildMCEntry(
 	    mc_group_id = 1,
 	    replicas={
@@ -75,7 +84,10 @@ def main(p4info_file_path, bmv2_file_path):
 	)
 	s1.WritePRE(mc_group=mc_group_entry)
 	print "Installed Multicast group on s1"
+
 	while True:
+
+	    #keep listening to Packet-in event sent from switch
             content = s1.ReadPacketIn()
 	    if content.WhichOneof('update')=='packet':
                 packet = content.packet.payload
@@ -92,16 +104,17 @@ def main(p4info_file_path, bmv2_file_path):
                 pkt_eth_dst = pkt.getlayer(Ether).dst
 		ether_type = pkt.getlayer(Ether).type
 
-		if ether_type == 2048 or ether_type == 2054:#learn_switch is only capable of dealing with ip or arp packets
+		if ether_type == 2048 or ether_type == 2054:    #learn_switch is only capable of dealing with ip or arp packets
 		    port_map.setdefault(pkt_eth_src, value)
 		    arp_rules.setdefault(value, [])
 
 		    #pkt.hide_defaults()
 		    #pkt.show()
-		    if pkt_eth_dst == bcast:
-		        if bcast not in arp_rules:
+		    if pkt_eth_dst == bcast:                    #arp_request packet processing
+		        if bcast not in arp_rules:              #controller need to record written rules to avoid grpc error
 			    writeARPFlood(p4info_helper, sw=s1, in_port=value, dst_mac=bcast)
 			    arp_rules[value].append(bcast)
+
 			#packet out original packet
 			packet_out = p4info_helper.buildPacketOut(
 			    payload = packet,
@@ -111,13 +124,14 @@ def main(p4info_file_path, bmv2_file_path):
 			    }
 			)
 			s1.WritePacketOut(packet_out)
-		    else:
+		    else:                                       #arp_reply/ipv4 packet processing
 		        if pkt_eth_dst not in arp_rules[value]:
 			    writeARPReply(p4info_helper, sw=s1, in_port=value, dst_mac=pkt_eth_dst, port=port_map[pkt_eth_dst])
 			    arp_rules[value].append(pkt_eth_dst)
 		        if pkt_eth_src not in arp_rules[port_map[pkt_eth_dst]]:
 			    writeARPReply(p4info_helper, sw=s1, in_port=port_map[pkt_eth_dst], dst_mac=pkt_eth_src, port=port_map[pkt_eth_src])
 			    arp_rules[port_map[pkt_eth_dst]].append(pkt_eth_src)
+
 			#packet out original packet
 			packet_out = p4info_helper.buildPacketOut(
 			    payload = packet,
