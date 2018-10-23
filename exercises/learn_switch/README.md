@@ -11,8 +11,9 @@
 3. In mininet prompt type pingall, then you can see all icmp/arp packets are well forwarded.  
 ---
 ## Experiment Topology  
-+ In this implementation, there are 4 hosts connected to a switch.  
-<br/>
++ In this implementation, there are 4 hosts connected to a switch.   
+  
+  
 ![image](https://github.com/yenwang/simple_switch_grpc/blob/master/exercises/learn_switch/image.png)
 ---
 ## Notice 
