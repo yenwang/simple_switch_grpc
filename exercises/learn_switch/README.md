@@ -2,8 +2,8 @@
 ---
 ## Introduction ##  
 
-The objective of this implementation is to program a layer2 learning switch using P4_16 as well as to write a python controller which is responsible for dealing with Packet-In event sent from switch.  
-If you are interested, there are some comments in both learn_switch.p4 and mycontroller.py.
+### The objective of this implementation is to program a layer2 learning switch using P4_16 as well as to write a python controller which is responsible for dealing with Packet-In event sent from switch.  
+If you are interested, there are some comments in both learn_switch.p4 and mycontroller.py. ###
 ---
 ## How to Run ##
 1. Open a shell and type make run  
