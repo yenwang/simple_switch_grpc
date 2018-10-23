@@ -11,7 +11,7 @@
 3. In mininet prompt type pingall, then you can see all icmp/arp packets are well forwarded.  
 ---
 ## Experiment Topology  
-In this implementation, there are 4 hosts connected to a switch.  
++ In this implementation, there are 4 hosts connected to a switch.  
 ---
 ## Notice 
 I assume that: 
@@ -19,7 +19,7 @@ I assume that:
 2. The controller already knows that switch is connected to 4 hosts. (for multicast use)  
 ---
 ## Questions 
-I am curious about if there is any mechanism for my controller to request port status from switch using P4 Runtime.  
++ I am curious about if there is any mechanism for my controller to request port status from switch using P4 Runtime.  
 If there is such a mechanism, then my controller can configure the PRE dynamically.
 (In OpenFlow, API "PortStatusRequest" can request the port status from switch.)  
 I have studied the p4runtime.proto file, but It seems that there is no such rpc?
