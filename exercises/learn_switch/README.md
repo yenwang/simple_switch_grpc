@@ -12,6 +12,7 @@
 ---
 ## Experiment Topology  
 + In this implementation, there are 4 hosts connected to a switch.  
+<br/>
 ![image](https://github.com/yenwang/simple_switch_grpc/blob/master/exercises/learn_switch/image.png)
 ---
 ## Notice 
