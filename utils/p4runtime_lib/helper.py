@@ -16,6 +16,7 @@ import re
 import google.protobuf.text_format
 from p4.v1 import p4runtime_pb2
 from p4.config.v1 import p4info_pb2
+from p4.v1 import p4data_pb2
 
 from convert import encode
 
@@ -190,6 +191,17 @@ class P4InfoHelper(object):
                     for field_name, value in action_params.iteritems()
                 ])
         return table_entry
+
+    def buildRegisterEntry(self, register_name, index, data):
+	register_entry = p4runtime_pb2.RegisterEntry()
+	register_entry.register_id = self.get_registers_id(register_name)
+	register_entry_index = p4runtime_pb2.Index()
+	register_entry_index.index = index
+	register_entry.index.CopyFrom(register_entry_index)
+	register_entry_data = p4data_pb2.P4Data()
+	register_entry_data.enum_value = data
+	register_entry.data.CopyFrom(register_entry_data)
+	return register_entry
 
     def get_replicas_pb(self, egress_port, instance):
 	p4runtime_replicas = p4runtime_pb2.Replica()

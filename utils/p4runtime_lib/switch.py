@@ -86,6 +86,18 @@ class SwitchConnection(object):
 	    self.requests_stream.put(request)
 	    for item in self.stream_msg_resp:
 		return item
+
+    def WriteDigestAck(self, digest_id, list_id, dry_run=False, **kwargs):
+	request = p4runtime_pb2.StreamMessageRequest()
+	request.digest_ack.digest_id = digest_id
+	request.digest_ack.list_id = list_id
+	if dry_run:
+	    print "P4 Runtime WriteDigestAck:", request
+	else:
+	    self.requests_stream.put(request)
+	    print "Write Ack Success"
+	    for item in self.stream_msg_resp:
+		return item
     ####################################################################################
     ####################################################################################
     def SetForwardingPipelineConfig(self, p4info, dry_run=False, **kwargs):
@@ -130,6 +142,18 @@ class SwitchConnection(object):
         else:
             for response in self.client_stub.Read(request):
                 yield response
+
+    def WriteRegisterEntry(self, register_entry, dry_run=False):
+	request = p4runtime_pb2.WriteRequest()
+	request.device_id = self.device_id
+	request.election_id.low = 1
+	update = request.updates.add()
+	update.type = p4runtime_pb2.Update.INSERT
+	update.entity.register_entry.CopyFrom(register_entry)
+	if dry_run:
+	    print "P4Runtime Write:", request
+	else:
+	    self.client_stub.Write(request)
     ####################################################################################
     # function used to manipulate multicast group entry
     def WritePRE(self, mc_group, dry_run=False):
@@ -144,6 +168,24 @@ class SwitchConnection(object):
         else:
             self.client_stub.Write(request)
     ####################################################################################
+
+    def WriteDigestEntry(self, digest_id, max_timeout_ns, max_list_size, ack_timeout_ns, dry_run=False):
+	request = p4runtime_pb2.WriteRequest()
+	request.device_id = self.device_id
+	request.election_id.low = 1
+	update = request.updates.add()
+	update.type = p4runtime_pb2.Update.INSERT
+	update.entity.digest_entry.digest_id = digest_id
+	config = p4runtime_pb2.DigestEntry.Config()
+	config.max_timeout_ns = max_timeout_ns
+	config.max_list_size = max_list_size
+	config.ack_timeout_ns = ack_timeout_ns
+	update.entity.digest_entry.config.CopyFrom(config)
+	if dry_run:
+	    print "P4Runtime Write", request
+	else:
+	    self.client_stub.Write(request)
+
     #function used to read direct counter entry
     def ReadDirectCounters(self, table_id=None, dry_run=False):
 	request = p4runtime_pb2.ReadRequest()

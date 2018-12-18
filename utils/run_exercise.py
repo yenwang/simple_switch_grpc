@@ -96,17 +96,24 @@ class ExerciseTopo(Topo):
             sw_num   = int(host_sw[1:])
             host_ip = "10.0.%d.%d" % (sw_num, host_num)
             host_mac = '00:00:00:00:%02x:%02x' % (sw_num, host_num)
+	    sw_mac = '00:00:%02x:%02x:%02x:%02x' % (sw_num, sw_num, sw_num, sw_num)
             # Each host IP should be /24, so all exercise traffic will use the
             # default gateway (the switch) without sending ARP requests.
             self.addHost(host_name, ip=host_ip+'/24', mac=host_mac)
             self.addLink(host_name, host_sw,
                          delay=link['latency'], bw=link['bandwidth'],
-                         addr1=host_mac, addr2=host_mac)
+                         addr1=host_mac, addr2=sw_mac)
             self.addSwitchPort(host_sw, host_name)
 
         for link in switch_links:
+	    sw_front = link['node1']
+	    sw_back = link['node2']
+	    sw_fnum = int(sw_front[1:])
+	    sw_bnum = int(sw_back[1:])
+	    sw_fmac = '00:00:%02x:%02x:%02x:%02x' % (sw_fnum, sw_fnum, sw_fnum, sw_fnum)
+	    sw_bmac = '00:00:%02x:%02x:%02x:%02x' % (sw_bnum, sw_bnum, sw_bnum, sw_bnum)
             self.addLink(link['node1'], link['node2'],
-                        delay=link['latency'], bw=link['bandwidth'])
+                        delay=link['latency'], bw=link['bandwidth'], addr1=sw_fmac, addr2=sw_bmac)
             self.addSwitchPort(link['node1'], link['node2'])
             self.addSwitchPort(link['node2'], link['node1'])
 
