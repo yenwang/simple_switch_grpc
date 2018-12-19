@@ -115,12 +115,9 @@ def main(p4info_file_path, bmv2_file_path):
 		    port_map.setdefault(pkt_eth_src, value)
 		    arp_rules.setdefault(value, [])
 
-		    #pkt.hide_defaults()
-		    #pkt.show()
+		    pkt.hide_defaults()
+		    pkt.show()
 		    if pkt_eth_dst == bcast:                    #arp_request packet processing
-		        if bcast not in arp_rules:              #controller need to record written rules to avoid grpc error
-			    writeARPFlood(p4info_helper, sw=s1, in_port=value, dst_mac=bcast)
-			    arp_rules[value].append(bcast)
 			#packet out original packet
 			packet_out = p4info_helper.buildPacketOut(
 			    payload = packet,
@@ -130,14 +127,21 @@ def main(p4info_file_path, bmv2_file_path):
 			    }
 			)
 			s1.WritePacketOut(packet_out)
+		        if bcast not in arp_rules:              #controller need to record written rules to avoid grpc error
+			    writeARPFlood(p4info_helper, sw=s1, in_port=value, dst_mac=bcast)
+			    arp_rules[value].append(bcast)
+			'''
+			#packet out original packet
+			packet_out = p4info_helper.buildPacketOut(
+			    payload = packet,
+			    metadata = {
+				1 : "\000\000",
+				2 : "\000\001"
+			    }
+			)
+			s1.WritePacketOut(packet_out)
+			'''
 		    else:                                       #arp_reply/ipv4 packet processing
-		        if pkt_eth_dst not in arp_rules[value]:
-			    writeARPReply(p4info_helper, sw=s1, in_port=value, dst_mac=pkt_eth_dst, port=port_map[pkt_eth_dst])
-			    arp_rules[value].append(pkt_eth_dst)
-
-		        if pkt_eth_src not in arp_rules[port_map[pkt_eth_dst]]:
-			    writeARPReply(p4info_helper, sw=s1, in_port=port_map[pkt_eth_dst], dst_mac=pkt_eth_src, port=port_map[pkt_eth_src])
-			    arp_rules[port_map[pkt_eth_dst]].append(pkt_eth_src)
 			#packet out original packet
 			packet_out = p4info_helper.buildPacketOut(
 			    payload = packet,
@@ -147,6 +151,24 @@ def main(p4info_file_path, bmv2_file_path):
 			    }
 			)
 			s1.WritePacketOut(packet_out)
+		        if pkt_eth_dst not in arp_rules[value]:
+			    writeARPReply(p4info_helper, sw=s1, in_port=value, dst_mac=pkt_eth_dst, port=port_map[pkt_eth_dst])
+			    arp_rules[value].append(pkt_eth_dst)
+
+		        if pkt_eth_src not in arp_rules[port_map[pkt_eth_dst]]:
+			    writeARPReply(p4info_helper, sw=s1, in_port=port_map[pkt_eth_dst], dst_mac=pkt_eth_src, port=port_map[pkt_eth_src])
+			    arp_rules[port_map[pkt_eth_dst]].append(pkt_eth_src)
+			'''
+			#packet out original packet
+			packet_out = p4info_helper.buildPacketOut(
+			    payload = packet,
+			    metadata = {
+				1: port_map[pkt_eth_dst],
+				2: "\000\000"
+			    }
+			)
+			s1.WritePacketOut(packet_out)
+			'''
 		    #print "port_map:%s\n" % port_map
 		    #print "arp_rules:%s\n" % arp_rules
                     counter += 1

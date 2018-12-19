@@ -19,12 +19,14 @@ header ethernet_t {
 @controller_header("packet_in")
 header packet_in_header_t {
     bit<9> ingress_port;    //for switch to carry the original ingress port of packet-in packet
+    bit<7> padding;
 }
 
 @controller_header("packet_out")
 header packet_out_header_t {
     bit<9> egress_port;	   //for controller to tell switches to forward the packet-out packet through this field
     bit<16> mcast;	   //for controller to specify a multicast group if needed
+    bit<7> padding;
 }
 
 struct metadata {

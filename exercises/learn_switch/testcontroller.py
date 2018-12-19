@@ -85,16 +85,16 @@ def main(p4info_file_path, bmv2_file_path):
 	s1.WritePRE(mc_group=mc_group_entry)
 	print "Installed Multicast group on s1"
 
-        '''#for use cases that host already knows destination MAC
+        #for use cases that host already knows destination MAC
         port_map = {'00:00:00:00:01:01': '\x00\x01', '00:00:00:00:01:02': '\x00\x02', '00:00:00:00:01:03': '\x00\x03', '00:00:00:00:01:04': '\x00\x04'}
         arp_rules = {'\x00\x01':[], '\x00\x02':[], '\x00\x03':[], '\x00\x04':[]}
-	'''
+	
         accumulation = 0
         counter = 0
 	while True:
 	    #keep listening to Packet-in event sent from switch
             content = s1.ReadPacketIn()
-	    begin = time.time()
+	    #begin = time.time()
 	    if content.WhichOneof('update')=='packet':
                 packet = content.packet.payload
                 #hex_packet = binascii.hexlify(content.packet.payload)
@@ -112,11 +112,12 @@ def main(p4info_file_path, bmv2_file_path):
 		ether_type = pkt.getlayer(Ether).type
 
 		if ether_type == 2048 or ether_type == 2054:    #learn_switch is only capable of dealing with ip or arp packets
-		    port_map.setdefault(pkt_eth_src, value)
-		    arp_rules.setdefault(value, [])
+		    #port_map.setdefault(pkt_eth_src, value)
+		    #arp_rules.setdefault(value, [])
 
-		    #pkt.hide_defaults()
-		    #pkt.show()
+		    pkt.hide_defaults()
+		    pkt.show()
+		    '''
 		    if pkt_eth_dst == bcast:                    #arp_request packet processing
 		        if bcast not in arp_rules:              #controller need to record written rules to avoid grpc error
 			    writeARPFlood(p4info_helper, sw=s1, in_port=value, dst_mac=bcast)
@@ -156,7 +157,7 @@ def main(p4info_file_path, bmv2_file_path):
                     avg = accumulation / counter
                     print "Time delta for processing a packet-in message: %.9f" % (delta)
                     print "avg time processing a packet-in message: %.9f\n" % (avg)
-
+		    '''
 		
             
             
