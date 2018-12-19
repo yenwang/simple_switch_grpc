@@ -169,20 +169,15 @@ class SwitchConnection(object):
             self.client_stub.Write(request)
     ####################################################################################
 
-    def WriteDigestEntry(self, digest_id, max_timeout_ns, max_list_size, ack_timeout_ns, dry_run=False):
+    def WriteDigestEntry(self, digest_entry, dry_run=False):
 	request = p4runtime_pb2.WriteRequest()
 	request.device_id = self.device_id
 	request.election_id.low = 1
 	update = request.updates.add()
 	update.type = p4runtime_pb2.Update.INSERT
-	update.entity.digest_entry.digest_id = digest_id
-	config = p4runtime_pb2.DigestEntry.Config()
-	config.max_timeout_ns = max_timeout_ns
-	config.max_list_size = max_list_size
-	config.ack_timeout_ns = ack_timeout_ns
-	update.entity.digest_entry.config.CopyFrom(config)
+	update.entity.digest_entry.CopyFrom(digest_entry)    
 	if dry_run:
-	    print "P4Runtime Write", request
+	    print "P4Runtime Write:", request
 	else:
 	    self.client_stub.Write(request)
 

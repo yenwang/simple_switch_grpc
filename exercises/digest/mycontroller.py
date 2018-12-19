@@ -86,16 +86,21 @@ def main(p4info_file_path, bmv2_file_path):
         )
         s1.WritePRE(mc_group=mc_group_entry)
         print "Installed Multicast group on s1"
-	max_timeout_ns = np.dtype(np.int64)
-	max_timeout_ns = 0
-	ack_timeout_ns = np.dtype(np.int64)
-	ack_timeout_ns = 0
-	s1.WriteDigestEntry(385931647, max_timeout_ns, 1, ack_timeout_ns)
+
+	digest_entry = p4info_helper.buildDigestEntry(
+	    digest_name = "mac_learn_digest_t",
+	    max_timeout_ns = 0,
+	    max_list_size = 1,
+	    ack_timeout_ns = 0
+	)
+	s1.WriteDigestEntry(digest_entry)
 	print "Digest Entry Set on s1"
+
 	'''for use cases that host already knows destination MAC
 	port_map = {'00:00:00:00:01:01': '\x00\x01', '00:00:00:00:01:02': '\x00\x02', '00:00:00:00:01:03': '\x00\x03', '00:00:00:00:01:04': '\x00\x04'}
 	arp_rules = {'\x00\x01':[], '\x00\x02':[], '\x00\x03':[], '\x00\x04':[]}
 	'''
+
 	accumulation = 0
 	counter = 0
 	while True:

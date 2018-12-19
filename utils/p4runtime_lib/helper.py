@@ -234,3 +234,13 @@ class P4InfoHelper(object):
 		for metadata_id, value in metadata.iteritems()
 	    ])
 	return packet_out
+
+    def buildDigestEntry(self, digest_name, max_timeout_ns, max_list_size, ack_timeout_ns):
+	digest_entry = p4runtime_pb2.DigestEntry()
+	digest_entry.digest_id = self.get_digests_id(digest_name)
+	config = p4runtime_pb2.DigestEntry.Config()
+	config.max_timeout_ns = max_timeout_ns
+	config.max_list_size = max_list_size
+	config.ack_timeout_ns = ack_timeout_ns
+	digest_entry.config.CopyFrom(config)
+	return digest_entry
