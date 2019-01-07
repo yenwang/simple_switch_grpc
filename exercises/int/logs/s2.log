@@ -1,0 +1,9 @@
+Calling target program-options parser
+Adding interface s2-eth1 as port 1
+[01:36:31.614] [bmv2] [D] [thread 12741] Adding interface s2-eth1 as port 1
+Adding interface s2-eth2 as port 2
+[01:36:31.653] [bmv2] [D] [thread 12741] Adding interface s2-eth2 as port 2
+I0107 01:36:31.682320426   12741 server_builder.cc:247]      Synchronous server. Num CQs: 1, Min pollers: 1, Max Pollers: 2147483647, CQ timeout (msec): 1000
+Server listening on 0.0.0.0:50052
+[01:36:31.688] [bmv2] [I] [thread 12741] Starting Thrift server on port 9091
+[01:36:31.689] [bmv2] [I] [thread 12741] Thrift server was started
