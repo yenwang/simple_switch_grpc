@@ -1,0 +1,9 @@
+Calling target program-options parser
+Adding interface s5-eth1 as port 1
+[20:28:21.547] [bmv2] [D] [thread 42905] Adding interface s5-eth1 as port 1
+Adding interface s5-eth2 as port 2
+[20:28:21.579] [bmv2] [D] [thread 42905] Adding interface s5-eth2 as port 2
+I0325 20:28:21.607901862   42905 server_builder.cc:247]      Synchronous server. Num CQs: 1, Min pollers: 1, Max Pollers: 2147483647, CQ timeout (msec): 1000
+Server listening on 0.0.0.0:50055
+[20:28:21.611] [bmv2] [I] [thread 42905] Starting Thrift server on port 9094
+[20:28:21.611] [bmv2] [I] [thread 42905] Thrift server was started

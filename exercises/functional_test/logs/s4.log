@@ -1,0 +1,9 @@
+Calling target program-options parser
+Adding interface s4-eth1 as port 1
+[20:28:21.000] [bmv2] [D] [thread 42901] Adding interface s4-eth1 as port 1
+Adding interface s4-eth2 as port 2
+[20:28:21.043] [bmv2] [D] [thread 42901] Adding interface s4-eth2 as port 2
+I0325 20:28:21.084228484   42901 server_builder.cc:247]      Synchronous server. Num CQs: 1, Min pollers: 1, Max Pollers: 2147483647, CQ timeout (msec): 1000
+Server listening on 0.0.0.0:50054
+[20:28:21.093] [bmv2] [I] [thread 42901] Starting Thrift server on port 9093
+[20:28:21.094] [bmv2] [I] [thread 42901] Thrift server was started
